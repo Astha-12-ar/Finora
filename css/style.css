@@ -1,0 +1,49 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #f4f6f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.login-container {
+  background: #fff;
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  width: 100%;
+  max-width: 380px;
+}
+
+.login-container h1 { color: #1a3c6e; margin-bottom: 0.25rem; }
+.tagline { color: #6b7280; font-size: 0.9rem; margin-bottom: 1.5rem; }
+
+.form-group { margin-bottom: 1.2rem; }
+.form-group label { display: block; font-size: 0.85rem; margin-bottom: 0.4rem; color: #374151; }
+.form-group input {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+.form-group input:focus { outline: none; border-color: #1a3c6e; }
+
+.error-message { color: #dc2626; font-size: 0.8rem; display: block; margin-top: 0.3rem; min-height: 1rem; }
+
+#loginBtn {
+  width: 100%;
+  padding: 0.7rem;
+  background: #1a3c6e;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+#loginBtn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.demo-note { font-size: 0.75rem; color: #9ca3af; margin-top: 1rem; text-align: center; }
