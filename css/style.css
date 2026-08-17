@@ -3,12 +3,9 @@
 body {
   font-family: 'Segoe UI', sans-serif;
   background: #f4f6f8;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
 }
 
+/* ===================== LOGIN PAGE ===================== */
 .login-container {
   background: #fff;
   padding: 2.5rem;
@@ -16,6 +13,15 @@ body {
   box-shadow: 0 4px 20px rgba(0,0,0,0.08);
   width: 100%;
   max-width: 380px;
+  margin: 0 auto;
+}
+
+/* Centers the login card specifically — scoped so it doesn't affect the dashboard layout */
+body:has(.login-container) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
 }
 
 .login-container h1 { color: #1a3c6e; margin-bottom: 0.25rem; }
@@ -47,3 +53,61 @@ body {
 #loginBtn:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .demo-note { font-size: 0.75rem; color: #9ca3af; margin-top: 1rem; text-align: center; }
+
+/* ===================== DASHBOARD LAYOUT ===================== */
+.app-layout { display: flex; min-height: 100vh; }
+
+.sidebar {
+  width: 220px;
+  background: #1a3c6e;
+  color: #fff;
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+}
+.sidebar .logo { margin-bottom: 2rem; }
+.sidebar nav { display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+.nav-link { color: #cbd5e1; text-decoration: none; padding: 0.6rem 0.8rem; border-radius: 6px; }
+.nav-link:hover, .nav-link.active { background: rgba(255,255,255,0.1); color: #fff; }
+.logout-btn { background: transparent; border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 0.5rem; border-radius: 6px; cursor: pointer; }
+
+.main-content { flex: 1; padding: 2rem; background: #f4f6f8; }
+.topbar { margin-bottom: 1.5rem; }
+
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.card { background: #fff; padding: 1.2rem; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+.card-label { font-size: 0.8rem; color: #6b7280; margin-bottom: 0.4rem; }
+.card-value { font-size: 1.4rem; font-weight: 600; color: #1a3c6e; }
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+.panel { background: #fff; padding: 1.2rem; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+.panel h3 { margin-bottom: 1rem; font-size: 1rem; color: #1a3c6e; }
+
+.list { list-style: none; display: flex; flex-direction: column; gap: 0.8rem; }
+.list-item { display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.6rem; border-bottom: 1px solid #f0f0f0; }
+.item-title { font-size: 0.9rem; font-weight: 500; }
+.item-sub { font-size: 0.75rem; color: #9ca3af; }
+.item-amount.positive { color: #16a34a; font-weight: 600; }
+.item-amount.negative { color: #dc2626; font-weight: 600; }
+.item-status { font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 12px; text-transform: capitalize; }
+.item-status.upcoming { background: #fef3c7; color: #92400e; }
+.item-status.overdue { background: #fee2e2; color: #991b1b; }
+.item-status.paid { background: #dcfce7; color: #166534; }
+
+/* ===================== MOBILE RESPONSIVENESS ===================== */
+@media (max-width: 768px) {
+  .app-layout { flex-direction: column; }
+  .sidebar { width: 100%; flex-direction: row; overflow-x: auto; }
+  .sidebar nav { flex-direction: row; }
+  .summary-cards { grid-template-columns: repeat(2, 1fr); }
+  .dashboard-grid { grid-template-columns: 1fr; }
+}

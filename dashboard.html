@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Finora - Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h2 class="logo">Finora</h2>
+      <nav>
+        <a href="dashboard.html" class="nav-link active">Dashboard</a>
+        <a href="transactions.html" class="nav-link">Transactions</a>
+        <a href="alerts.html" class="nav-link">Alerts</a>
+        <a href="reminders.html" class="nav-link">Reminders</a>
+      </nav>
+      <button id="logoutBtn" class="logout-btn">Log Out</button>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main-content">
+      <header class="topbar">
+        <h1>Welcome back, <span id="userName">User</span></h1>
+      </header>
+
+      <!-- Summary Cards -->
+      <section class="summary-cards">
+        <div class="card">
+          <p class="card-label">Balance</p>
+          <p class="card-value" id="balanceValue">₹0</p>
+        </div>
+        <div class="card">
+          <p class="card-label">Income</p>
+          <p class="card-value" id="incomeValue">₹0</p>
+        </div>
+        <div class="card">
+          <p class="card-label">Expenses</p>
+          <p class="card-value" id="expenseValue">₹0</p>
+        </div>
+        <div class="card">
+          <p class="card-label">Unread Alerts</p>
+          <p class="card-value" id="alertCount">0</p>
+        </div>
+      </section>
+
+      <!-- Recent Transactions + Reminders -->
+      <section class="dashboard-grid">
+        <div class="panel">
+          <h3>Recent Transactions</h3>
+          <ul id="recentTransactions" class="list"></ul>
+        </div>
+        <div class="panel">
+          <h3>Upcoming Reminders</h3>
+          <ul id="upcomingReminders" class="list"></ul>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>
