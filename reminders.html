@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Finora - Reminders</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <h2 class="logo">Finora</h2>
+      <nav>
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="transactions.html" class="nav-link">Transactions</a>
+        <a href="alerts.html" class="nav-link">Alerts</a>
+        <a href="reminders.html" class="nav-link active">Reminders</a>
+      </nav>
+      <button id="logoutBtn" class="logout-btn">Log Out</button>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <h1>Payment Reminders</h1>
+      </header>
+
+      <!-- Add Reminder Form -->
+      <section class="panel form-panel">
+        <h3>Add a Reminder</h3>
+        <form id="reminderForm" class="reminder-form">
+          <!-- Added aria-labels/titles for screen readers -->
+          <input type="text" id="billName" placeholder="Bill name (e.g. Internet Bill)" title="Bill Name" aria-label="Bill Name" required>
+          <input type="number" id="billAmount" placeholder="Amount (₹)" title="Bill Amount" aria-label="Bill Amount" required min="1">
+          
+          <!-- Fix: Added title and aria-label to the date input -->
+          <input type="date" id="billDueDate" title="Due Date" aria-label="Due Date" required>
+          
+          <label class="checkbox-label">
+            <input type="checkbox" id="billRecurring"> Recurring
+          </label>
+          <button type="submit">Add Reminder</button>
+        </form>
+        <span class="error-message" id="reminderFormError"></span>
+      </section>
+
+      <!-- Reminders List -->
+      <section class="panel">
+        <div class="panel-header">
+          <h3>All Reminders</h3>
+          <!-- Fix: Added title and aria-label -->
+          <select id="statusFilter" title="Filter by status" aria-label="Filter by status">
+            <option value="all">All</option>
+            <option value="upcoming">Upcoming</option>
+            <option value="overdue">Overdue</option>
+            <option value="paid">Paid</option>
+          </select>
+        </div>
+        <ul id="remindersList" class="list"></ul>
+        
+        <!-- Fix: Removed inline style="display:none;" and added 'hidden' class -->
+        <p id="noReminders" class="no-results hidden">No reminders found.</p>
+      </section>
+    </main>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/reminders.js"></script>
+</body>
+</html>

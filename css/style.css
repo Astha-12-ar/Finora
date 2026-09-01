@@ -148,4 +148,4 @@ body:has(.login-container) {
 }
 .text-right { text-align: right; }
 .positive { color: #16a34a; font-weight: 600; }
-.negative { color: #dc2626; font-weight:
+.negative { color: #dc2626; font-weight: 600;}

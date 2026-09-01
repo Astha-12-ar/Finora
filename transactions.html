@@ -26,13 +26,16 @@
 
       <!-- Filter/Search Controls -->
       <section class="filters">
-        <input type="text" id="searchInput" placeholder="Search merchant or category...">
+        <!-- Added title and aria-label for accessibility -->
+        <input type="text" id="searchInput" placeholder="Search merchant or category..." title="Search transactions" aria-label="Search transactions">
 
-        <select id="categoryFilter">
+        <!-- Added title and aria-label to fix the accessibility error -->
+        <select id="categoryFilter" title="Filter by category" aria-label="Filter by category">
           <option value="all">All Categories</option>
         </select>
 
-        <select id="sortBy">
+        <!-- Added title and aria-label to fix the accessibility error -->
+        <select id="sortBy" title="Sort transactions" aria-label="Sort transactions">
           <option value="date-desc">Date (Newest)</option>
           <option value="date-asc">Date (Oldest)</option>
           <option value="amount-desc">Amount (High to Low)</option>
@@ -54,7 +57,8 @@
           </thead>
           <tbody id="transactionsTableBody"></tbody>
         </table>
-        <p id="noResults" class="no-results" style="display:none;">No transactions found.</p>
+        <!-- Removed inline style="display:none;" to fix the CSS warning -->
+        <p id="noResults" class="no-results hidden">No transactions found.</p>
       </section>
     </main>
   </div>
