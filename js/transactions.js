@@ -67,9 +67,11 @@ function renderTable(list) {
 
   if (list.length === 0) {
     tbody.innerHTML = "";
+    noResults.classList.remove("hidden");
     noResults.style.display = "block";
     return;
   }
+  noResults.classList.add("hidden");
   noResults.style.display = "none";
 
   tbody.innerHTML = list.map(t => `

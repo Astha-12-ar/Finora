@@ -16,19 +16,19 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("markAllReadBtn").addEventListener("click", markAllRead);
 });
 
-// Merge mock ALERTS with any read/unread state changes saved in Local Storage
+// Load alerts with persistent read/unread state synced across pages
 function loadAlerts() {
-  const savedState = JSON.parse(localStorage.getItem("finora_alert_state")) || {};
-  allAlerts = ALERTS.map(a => ({
-    ...a,
-    read: savedState[a.id] !== undefined ? savedState[a.id] : a.read
-  }));
+  allAlerts = typeof getStoredAlerts === "function" ? getStoredAlerts() : ALERTS;
 }
 
 function saveAlertState() {
-  const state = {};
-  allAlerts.forEach(a => { state[a.id] = a.read; });
-  localStorage.setItem("finora_alert_state", JSON.stringify(state));
+  if (typeof saveStoredAlerts === "function") {
+    saveStoredAlerts(allAlerts);
+  } else {
+    const state = {};
+    allAlerts.forEach(a => { state[a.id] = a.read; });
+    localStorage.setItem("finora_alert_state", JSON.stringify(state));
+  }
 }
 
 function markAsRead(id) {
@@ -59,9 +59,11 @@ function renderAlerts() {
 
   if (filtered.length === 0) {
     list.innerHTML = "";
+    noResults.classList.remove("hidden");
     noResults.style.display = "block";
     return;
   }
+  noResults.classList.add("hidden");
   noResults.style.display = "none";
 
   list.innerHTML = filtered.map(a => `

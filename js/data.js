@@ -72,6 +72,54 @@ const REMINDERS = [
   { id: "r5", billName: "Water Bill",        amount: 450,  dueDate: "2026-07-30", recurring: true,  status: "paid"     }
 ];
 
-// Export for use across other JS files (auth.js, dashboard.js, etc.)
-// If not using ES modules, these globals (USERS, TRANSACTIONS, ALERTS, REMINDERS)
-// are already accessible once this file is loaded via <script src="js/data.js">
+// -------------------- STORAGE HELPERS --------------------
+// Helper to get alerts with persistent read/unread state
+function getStoredAlerts() {
+  const savedState = JSON.parse(localStorage.getItem("finora_alert_state")) || {};
+  return ALERTS.map(a => ({
+    ...a,
+    read: savedState[a.id] !== undefined ? savedState[a.id] : a.read
+  }));
+}
+
+// Helper to save alert read/unread state
+function saveStoredAlerts(alerts) {
+  const state = {};
+  alerts.forEach(a => { state[a.id] = a.read; });
+  localStorage.setItem("finora_alert_state", JSON.stringify(state));
+}
+
+// Helper to get reminders (mock + custom, with updated statuses and paid state)
+function getStoredReminders() {
+  const custom = JSON.parse(localStorage.getItem("finora_custom_reminders")) || [];
+  const statuses = JSON.parse(localStorage.getItem("finora_reminder_statuses")) || {};
+  const today = new Date().toISOString().split("T")[0];
+
+  const all = [...REMINDERS, ...custom];
+  return all.map(r => {
+    const currentStatus = statuses[r.id] !== undefined ? statuses[r.id] : r.status;
+    let finalStatus = currentStatus;
+    if (finalStatus !== "paid") {
+      finalStatus = r.dueDate < today ? "overdue" : "upcoming";
+    }
+    return {
+      ...r,
+      status: finalStatus
+    };
+  });
+}
+
+// Helper to save custom reminders and reminder status changes
+function saveStoredReminders(reminders) {
+  const mockIds = new Set(REMINDERS.map(r => r.id));
+  const custom = reminders.filter(r => !mockIds.has(r.id));
+  localStorage.setItem("finora_custom_reminders", JSON.stringify(custom));
+
+  const statuses = {};
+  reminders.forEach(r => {
+    if (r.status) {
+      statuses[r.id] = r.status;
+    }
+  });
+  localStorage.setItem("finora_reminder_statuses", JSON.stringify(statuses));
+}

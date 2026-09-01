@@ -17,16 +17,25 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("statusFilter").addEventListener("change", renderReminders);
 });
 
-// Merge mock REMINDERS with any user-added ones saved in Local Storage
+// Load mock REMINDERS merged with custom ones and status overrides
 function loadReminders() {
-  const saved = JSON.parse(localStorage.getItem("finora_custom_reminders")) || [];
-  allReminders = [...REMINDERS, ...saved];
+  allReminders = typeof getStoredReminders === "function" ? getStoredReminders() : [...REMINDERS];
 }
 
-function saveCustomReminders() {
-  const mockIds = new Set(REMINDERS.map(r => r.id));
-  const custom = allReminders.filter(r => !mockIds.has(r.id));
-  localStorage.setItem("finora_custom_reminders", JSON.stringify(custom));
+function saveReminders() {
+  if (typeof saveStoredReminders === "function") {
+    saveStoredReminders(allReminders);
+  } else {
+    const mockIds = new Set(REMINDERS.map(r => r.id));
+    const custom = allReminders.filter(r => !mockIds.has(r.id));
+    localStorage.setItem("finora_custom_reminders", JSON.stringify(custom));
+
+    const statuses = {};
+    allReminders.forEach(r => {
+      if (r.status) statuses[r.id] = r.status;
+    });
+    localStorage.setItem("finora_reminder_statuses", JSON.stringify(statuses));
+  }
 }
 
 function updateReminderStatuses() {
@@ -57,18 +66,19 @@ function handleAddReminder(e) {
     return;
   }
 
+  const today = new Date().toISOString().split("T")[0];
   const newReminder = {
     id: "r" + Date.now(),
     billName,
     amount: billAmount,
     dueDate: billDueDate,
     recurring: billRecurring,
-    status: "upcoming"
+    status: billDueDate < today ? "overdue" : "upcoming"
   };
 
   allReminders.push(newReminder);
   updateReminderStatuses();
-  saveCustomReminders();
+  saveReminders();
   renderReminders();
 
   e.target.reset();
@@ -78,7 +88,7 @@ function markAsPaid(id) {
   const reminder = allReminders.find(r => r.id === id);
   if (reminder) {
     reminder.status = "paid";
-    saveCustomReminders();
+    saveReminders();
     renderReminders();
   }
 }
@@ -96,9 +106,11 @@ function renderReminders() {
 
   if (filtered.length === 0) {
     list.innerHTML = "";
+    noResults.classList.remove("hidden");
     noResults.style.display = "block";
     return;
   }
+  noResults.classList.add("hidden");
   noResults.style.display = "none";
 
   list.innerHTML = filtered.map(r => `

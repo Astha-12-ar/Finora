@@ -1,5 +1,4 @@
 // Redirect to login if no session exists
-// Redirect to login if no session
 const session = JSON.parse(localStorage.getItem("finora_session"));
 if (!session) {
   window.location.href = "index.html";
@@ -24,7 +23,10 @@ function renderSummaryCards() {
   const income = TRANSACTIONS.filter(t => t.amount > 0).reduce((sum, t) => sum + t.amount, 0);
   const expenses = TRANSACTIONS.filter(t => t.amount < 0).reduce((sum, t) => sum + Math.abs(t.amount), 0);
   const balance = income - expenses;
-  const unreadAlerts = ALERTS.filter(a => !a.read).length;
+  
+  // Use stored alerts to reflect read/unread state synced from alerts page
+  const alerts = typeof getStoredAlerts === "function" ? getStoredAlerts() : ALERTS;
+  const unreadAlerts = alerts.filter(a => !a.read).length;
 
   document.getElementById("balanceValue").textContent = `₹${balance.toLocaleString()}`;
   document.getElementById("incomeValue").textContent = `₹${income.toLocaleString()}`;
@@ -53,10 +55,18 @@ function renderRecentTransactions() {
 
 function renderUpcomingReminders() {
   const list = document.getElementById("upcomingReminders");
-  const upcoming = REMINDERS
+  
+  // Use stored reminders to include custom-added reminders and exclude paid ones
+  const reminders = typeof getStoredReminders === "function" ? getStoredReminders() : REMINDERS;
+  const upcoming = reminders
     .filter(r => r.status !== "paid")
     .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
     .slice(0, 3);
+
+  if (upcoming.length === 0) {
+    list.innerHTML = `<li class="list-item"><span class="item-sub">No upcoming reminders.</span></li>`;
+    return;
+  }
 
   list.innerHTML = upcoming.map(r => `
     <li class="list-item">
