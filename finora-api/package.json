@@ -1,0 +1,29 @@
+{
+  "name": "finora-api",
+  "version": "1.0.0",
+  "description": "Backend REST API for Finora - Personal Finance & Alerts Management",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "seed": "node data/seed.js"
+  },
+  "keywords": [
+    "finora",
+    "express",
+    "sqlite",
+    "finance",
+    "api"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "better-sqlite3": "^13.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "zod": "^4.5.4"
+  }
+}
