@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 const authenticateToken = require('../middleware/auth');
+const { createTransactionSchema } = require('../validators/transactions.validators');
 
 // All transaction routes are protected
 router.use(authenticateToken);
@@ -10,7 +11,7 @@ router.use(authenticateToken);
 router.get('/', (req, res, next) => {
   try {
     const transactions = db.prepare(
-      'SELECT * FROM transactions WHERE user_id = ? ORDER BY date DESC, created_at DESC'
+      'SELECT * FROM transactions WHERE user_id = ? ORDER BY date DESC, rowid DESC'
     ).all(req.user.id);
 
     res.json({ success: true, data: transactions });
@@ -22,16 +23,13 @@ router.get('/', (req, res, next) => {
 // POST /api/transactions
 router.post('/', (req, res, next) => {
   try {
-    const { date, merchant, category, amount, status = 'completed' } = req.body;
-    if (!date || !merchant || !category || amount === undefined) {
-      return res.status(400).json({ success: false, error: 'Missing required transaction fields' });
-    }
+    const { date, merchant, category, amount, status } = createTransactionSchema.parse(req.body);
 
     const id = 't_' + Date.now();
     db.prepare(`
       INSERT INTO transactions (id, user_id, date, merchant, category, amount, status)
       VALUES (?, ?, ?, ?, ?, ?, ?)
-    `).run(id, req.user.id, date, merchant, category, Number(amount), status);
+    `).run(id, req.user.id, date, merchant, category, amount, status);
 
     const created = db.prepare('SELECT * FROM transactions WHERE id = ?').get(id);
     res.status(201).json({ success: true, data: created });

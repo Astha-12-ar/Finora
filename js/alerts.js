@@ -1,49 +1,84 @@
-const session = JSON.parse(localStorage.getItem("finora_session"));
-if (!session) window.location.href = "index.html";
+// Synchronous auth check
+if (!localStorage.getItem("token")) {
+  window.location.href = "index.html";
+}
 
 let allAlerts = [];
 
-document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("logoutBtn").addEventListener("click", () => {
-    localStorage.removeItem("finora_session");
-    window.location.href = "index.html";
-  });
+document.addEventListener("DOMContentLoaded", async () => {
+  // Setup logout button
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", logout);
+  }
 
-  loadAlerts();
-  renderAlerts();
+  // Verify auth in background
+  checkAuth().catch(() => {});
+
+  const list = document.getElementById("alertsList");
+  list.innerHTML = '<li class="list-item"><span class="item-sub">Loading alerts...</span></li>';
+
+  // Event delegation for "Mark Read" buttons
+  list.addEventListener("click", async (e) => {
+    const btn = e.target.closest(".mark-read-btn");
+    if (btn && btn.dataset.id) {
+      btn.disabled = true;
+      btn.textContent = "Updating...";
+      await markAsRead(btn.dataset.id);
+    }
+  });
 
   document.getElementById("typeFilter").addEventListener("change", renderAlerts);
   document.getElementById("markAllReadBtn").addEventListener("click", markAllRead);
+
+  // Fetch alerts from API
+  try {
+    const res = await apiFetch("/alerts");
+    allAlerts = res?.data || [];
+    renderAlerts();
+  } catch (err) {
+    console.error("Failed to load alerts:", err);
+    const errorMsg = err.isNetworkError
+      ? "Unable to connect to the Finora server. Please make sure the API is running and try again."
+      : (err.message || "Failed to load alerts.");
+    list.innerHTML = `<li class="list-item"><span class="item-sub error-message">${errorMsg}</span></li>`;
+  }
 });
 
-// Load alerts with persistent read/unread state synced across pages
-function loadAlerts() {
-  allAlerts = typeof getStoredAlerts === "function" ? getStoredAlerts() : ALERTS;
-}
-
-function saveAlertState() {
-  if (typeof saveStoredAlerts === "function") {
-    saveStoredAlerts(allAlerts);
-  } else {
-    const state = {};
-    allAlerts.forEach(a => { state[a.id] = a.read; });
-    localStorage.setItem("finora_alert_state", JSON.stringify(state));
-  }
-}
-
-function markAsRead(id) {
-  const alert = allAlerts.find(a => a.id === id);
-  if (alert) {
-    alert.read = true;
-    saveAlertState();
+async function markAsRead(id) {
+  try {
+    await apiFetch(`/alerts/${id}/read`, {
+      method: "PATCH",
+      body: JSON.stringify({ read: true })
+    });
+    const targetAlert = allAlerts.find(a => String(a.id) === String(id));
+    if (targetAlert) {
+      targetAlert.read = true;
+    }
+    renderAlerts();
+  } catch (err) {
+    console.error("Failed to mark alert as read:", err);
+    window.alert(err.message || "Failed to mark alert as read.");
     renderAlerts();
   }
 }
 
-function markAllRead() {
-  allAlerts.forEach(a => a.read = true);
-  saveAlertState();
-  renderAlerts();
+async function markAllRead() {
+  const btn = document.getElementById("markAllReadBtn");
+  if (btn) btn.disabled = true;
+
+  try {
+    await apiFetch("/alerts/read-all", {
+      method: "PATCH"
+    });
+    allAlerts.forEach(a => { a.read = true; });
+    renderAlerts();
+  } catch (err) {
+    console.error("Failed to mark all alerts as read:", err);
+    window.alert(err.message || "Failed to mark all alerts as read.");
+  } finally {
+    if (btn) btn.disabled = false;
+  }
 }
 
 function renderAlerts() {
@@ -75,7 +110,7 @@ function renderAlerts() {
         </p>
         <p class="item-sub">${a.date}</p>
       </div>
-      ${!a.read ? `<button class="mark-read-btn" onclick="markAsRead('${a.id}')">Mark Read</button>` : '<span class="read-label">Read</span>'}
+      ${!a.read ? `<button class="mark-read-btn" data-id="${a.id}">Mark Read</button>` : '<span class="read-label">Read</span>'}
     </li>
   `).join("");
 }
@@ -89,3 +124,7 @@ function formatType(type) {
   };
   return labels[type] || type;
 }
+
+// Expose markAsRead and markAllRead on window for global/inline/test access
+window.markAsRead = markAsRead;
+window.markAllRead = markAllRead;

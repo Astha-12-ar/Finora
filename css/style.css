@@ -255,6 +255,30 @@ body:has(.login-container) {
   border-color: #1a3c6e;
 }
 
+.delete-btn {
+  padding: 0.35rem 0.65rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #dc2626;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.delete-btn:hover {
+  background: #dc2626;
+  color: #fff;
+  border-color: #dc2626;
+}
+.delete-btn:disabled,
+.mark-read-btn:disabled,
+.mark-paid-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .read-label {
   font-size: 0.75rem;
   color: #9ca3af;
@@ -328,7 +352,8 @@ body:has(.login-container) {
 }
 .reminder-form input[type="text"],
 .reminder-form input[type="number"],
-.reminder-form input[type="date"] {
+.reminder-form input[type="date"],
+.reminder-form select {
   padding: 0.55rem 0.75rem;
   border: 1px solid #d1d5db;
   border-radius: 6px;

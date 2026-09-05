@@ -1,7 +1,8 @@
 // ============================================================
 // data.js
 // Mock dataset for Finora - Banking Alert System
-// NOTE: This is DEMO data only. No real banking connection.
+// NOTE: RETIRED in Phase 2. The frontend now consumes the real
+// Express + SQLite API via js/api.js.
 // ============================================================
 
 // -------------------- USERS --------------------

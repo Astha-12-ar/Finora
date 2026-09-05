@@ -1,11 +1,19 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 const dotenv = require('dotenv');
 
 // Load environment variables based on NODE_ENV
 const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
-dotenv.config({ path: path.resolve(process.cwd(), envFile) });
+const envPathCwd = path.resolve(process.cwd(), envFile);
+const envPathSrc = path.resolve(__dirname, '..', envFile);
+
+if (fs.existsSync(envPathCwd)) {
+  dotenv.config({ path: envPathCwd });
+} else if (fs.existsSync(envPathSrc)) {
+  dotenv.config({ path: envPathSrc });
+}
 // Fallback to default .env if specific env file didn't populate
 dotenv.config();
 
@@ -27,7 +35,14 @@ app.use(
   cors({
     origin: (origin, callback) => {
       // Allow requests with no origin (like mobile apps, curl, or Postman)
-      if (!origin || allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
+      if (!origin) {
+        return callback(null, true);
+      }
+      // Allow local file browsing (origin === 'null') in development only
+      if (process.env.NODE_ENV !== 'production' && origin === 'null') {
+        return callback(null, true);
+      }
+      if (allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
         return callback(null, true);
       }
       return callback(new Error(`CORS policy: origin ${origin} not allowed`));

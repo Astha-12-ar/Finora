@@ -24,6 +24,23 @@
         <h1>Transactions</h1>
       </header>
 
+      <!-- Add Transaction Form -->
+      <section class="panel form-panel">
+        <h3>Add a Transaction</h3>
+        <form id="transactionForm" class="reminder-form">
+          <input type="date" id="txnDate" title="Transaction Date" aria-label="Transaction Date" required>
+          <input type="text" id="txnMerchant" placeholder="Merchant (e.g. Grocery Store)" title="Merchant" aria-label="Merchant" required>
+          <input type="text" id="txnCategory" placeholder="Category (e.g. Groceries)" title="Category" aria-label="Category" required>
+          <input type="number" id="txnAmount" placeholder="Amount (- for debit, + for credit)" title="Amount" aria-label="Amount" required>
+          <select id="txnStatus" title="Status" aria-label="Status">
+            <option value="completed">Completed</option>
+            <option value="pending">Pending</option>
+          </select>
+          <button type="submit" id="addTxnBtn">Add Transaction</button>
+        </form>
+        <span class="error-message" id="txnFormError"></span>
+      </section>
+
       <!-- Filter/Search Controls -->
       <section class="filters">
         <!-- Added title and aria-label for accessibility -->
@@ -53,6 +70,7 @@
               <th>Category</th>
               <th>Status</th>
               <th class="text-right">Amount</th>
+              <th class="text-right">Action</th>
             </tr>
           </thead>
           <tbody id="transactionsTableBody"></tbody>
@@ -63,7 +81,7 @@
     </main>
   </div>
 
-  <script src="js/data.js"></script>
+  <script src="js/api.js"></script>
   <script src="js/transactions.js"></script>
 </body>
 </html>

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 const authenticateToken = require('../middleware/auth');
+const { createReminderSchema, updateReminderSchema } = require('../validators/reminders.validators');
 
 router.use(authenticateToken);
 
@@ -26,21 +27,17 @@ router.get('/', (req, res, next) => {
 // POST /api/reminders
 router.post('/', (req, res, next) => {
   try {
-    const { billName, bill_name, amount, dueDate, due_date, recurring = false, status = 'upcoming' } = req.body;
-    const resolvedName = billName || bill_name;
-    const resolvedDueDate = dueDate || due_date;
-
-    if (!resolvedName || amount === undefined || !resolvedDueDate) {
-      return res.status(400).json({ success: false, error: 'Bill name, amount, and due date are required' });
-    }
+    const parsed = createReminderSchema.parse(req.body);
+    const resolvedName = parsed.billName || parsed.bill_name;
+    const resolvedDueDate = parsed.dueDate || parsed.due_date;
 
     const id = 'r_' + Date.now();
     db.prepare(`
       INSERT INTO reminders (id, user_id, bill_name, amount, due_date, recurring, status)
       VALUES (?, ?, ?, ?, ?, ?, ?)
-    `).run(id, req.user.id, resolvedName, Number(amount), resolvedDueDate, recurring ? 1 : 0, status);
+    `).run(id, req.user.id, resolvedName, parsed.amount, resolvedDueDate, parsed.recurring ? 1 : 0, parsed.status);
 
-    const created = db.prepare('SELECT * FROM reminders WHERE id = ?').get(id);
+    const created = db.prepare('SELECT * FROM reminders WHERE id = ? AND user_id = ?').get(id, req.user.id);
     res.status(201).json({
       success: true,
       data: { ...created, recurring: Boolean(created.recurring) }
@@ -53,7 +50,7 @@ router.post('/', (req, res, next) => {
 // PATCH /api/reminders/:id
 router.patch('/:id', (req, res, next) => {
   try {
-    const { status, recurring } = req.body;
+    const { status, recurring } = updateReminderSchema.parse(req.body);
     const existing = db.prepare('SELECT * FROM reminders WHERE id = ? AND user_id = ?').get(
       req.params.id,
       req.user.id
@@ -72,7 +69,7 @@ router.patch('/:id', (req, res, next) => {
       WHERE id = ? AND user_id = ?
     `).run(updatedStatus, updatedRecurring, req.params.id, req.user.id);
 
-    const updated = db.prepare('SELECT * FROM reminders WHERE id = ?').get(req.params.id);
+    const updated = db.prepare('SELECT * FROM reminders WHERE id = ? AND user_id = ?').get(req.params.id, req.user.id);
     res.json({
       success: true,
       data: { ...updated, recurring: Boolean(updated.recurring) }

@@ -3,7 +3,20 @@ const path = require('path');
 const fs = require('fs');
 require('dotenv').config();
 
-const dbPath = path.resolve(process.cwd(), process.env.DB_PATH || './data/finora.db');
+let rawDbPath = process.env.DB_PATH || process.env.DATABASE_PATH || './data/finora.db';
+let dbPath = rawDbPath;
+
+if (!path.isAbsolute(rawDbPath)) {
+  const cwdPath = path.resolve(process.cwd(), rawDbPath);
+  const relativeToSrc = path.resolve(__dirname, '..', rawDbPath);
+  if (fs.existsSync(cwdPath)) {
+    dbPath = cwdPath;
+  } else if (fs.existsSync(relativeToSrc)) {
+    dbPath = relativeToSrc;
+  } else {
+    dbPath = cwdPath;
+  }
+}
 
 // Ensure database directory exists
 const dbDir = path.dirname(dbPath);
