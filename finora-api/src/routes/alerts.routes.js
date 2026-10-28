@@ -10,7 +10,7 @@ router.use(authenticateToken);
 router.get('/', (req, res, next) => {
   try {
     const alerts = db.prepare(
-      'SELECT * FROM alerts WHERE user_id = ? ORDER BY date DESC'
+      'SELECT * FROM alerts WHERE user_id = ? ORDER BY date DESC, rowid DESC'
     ).all(req.user.id);
 
     // SQLite stores booleans as 0 or 1, convert read to boolean

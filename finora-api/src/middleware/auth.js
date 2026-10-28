@@ -11,7 +11,10 @@ function authenticateToken(req, res, next) {
     });
   }
 
-  const secret = process.env.JWT_SECRET || 'finora_dev_jwt_secret_key_change_in_production';
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error('FATAL: JWT_SECRET environment variable is required');
+  }
 
   jwt.verify(token, secret, (err, user) => {
     if (err) {

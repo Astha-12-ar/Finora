@@ -35,9 +35,14 @@ router.post('/register', authLimiter, async (req, res, next) => {
       hashedPassword
     );
 
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      throw new Error('FATAL: JWT_SECRET environment variable is missing.');
+    }
+
     const token = jwt.sign(
       { id: userId, email, name },
-      process.env.JWT_SECRET || 'finora_dev_jwt_secret_key_change_in_production',
+      secret,
       { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
     );
 
@@ -66,9 +71,14 @@ router.post('/login', authLimiter, async (req, res, next) => {
       return res.status(401).json({ success: false, error: 'Invalid credentials' });
     }
 
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      throw new Error('FATAL: JWT_SECRET environment variable is missing.');
+    }
+
     const token = jwt.sign(
       { id: user.id, email: user.email, name: user.name },
-      process.env.JWT_SECRET || 'finora_dev_jwt_secret_key_change_in_production',
+      secret,
       { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
     );
 

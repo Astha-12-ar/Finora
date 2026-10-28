@@ -6,7 +6,9 @@ require('dotenv').config();
 let rawDbPath = process.env.DB_PATH || process.env.DATABASE_PATH || './data/finora.db';
 let dbPath = rawDbPath;
 
-if (!path.isAbsolute(rawDbPath)) {
+if (rawDbPath === ':memory:') {
+  dbPath = ':memory:';
+} else if (!path.isAbsolute(rawDbPath)) {
   const cwdPath = path.resolve(process.cwd(), rawDbPath);
   const relativeToSrc = path.resolve(__dirname, '..', rawDbPath);
   if (fs.existsSync(cwdPath)) {
@@ -18,17 +20,21 @@ if (!path.isAbsolute(rawDbPath)) {
   }
 }
 
-// Ensure database directory exists
-const dbDir = path.dirname(dbPath);
-if (!fs.existsSync(dbDir)) {
-  fs.mkdirSync(dbDir, { recursive: true });
+// Ensure database directory exists if not in-memory
+if (dbPath !== ':memory:') {
+  const dbDir = path.dirname(dbPath);
+  if (!fs.existsSync(dbDir)) {
+    fs.mkdirSync(dbDir, { recursive: true });
+  }
 }
 
 // Open/create SQLite database connection
 const db = new Database(dbPath);
 
-// Enable WAL mode for performance and foreign keys for referential integrity
-db.pragma('journal_mode = WAL');
+// Enable WAL mode for performance (if not in-memory) and foreign keys for referential integrity
+if (dbPath !== ':memory:') {
+  db.pragma('journal_mode = WAL');
+}
 db.pragma('foreign_keys = ON');
 
 // Initialize schema
@@ -57,7 +63,8 @@ db.exec(`
     type TEXT NOT NULL,
     message TEXT NOT NULL,
     date TEXT NOT NULL,
-    read INTEGER NOT NULL DEFAULT 0
+    read INTEGER NOT NULL DEFAULT 0,
+    severity TEXT DEFAULT 'warning'
   );
 
   CREATE TABLE IF NOT EXISTS reminders (
@@ -74,5 +81,15 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_alerts_user_id ON alerts(user_id);
   CREATE INDEX IF NOT EXISTS idx_reminders_user_id ON reminders(user_id);
 `);
+
+// Run lightweight column migration for existing databases
+try {
+  const alertColumns = db.prepare("PRAGMA table_info(alerts)").all();
+  if (alertColumns.length > 0 && !alertColumns.some(c => c.name === 'severity')) {
+    db.exec("ALTER TABLE alerts ADD COLUMN severity TEXT DEFAULT 'warning'");
+  }
+} catch (e) {
+  // Ignore migration error
+}
 
 module.exports = db;

@@ -8,4 +8,12 @@ const createTransactionSchema = z.object({
   status: z.enum(['completed', 'pending']).optional().default('completed')
 });
 
-module.exports = { createTransactionSchema };
+const updateTransactionSchema = z.object({
+  date: z.string().trim().min(1).optional(),
+  merchant: z.string().trim().min(1).max(150).optional(),
+  category: z.string().trim().min(1).max(100).optional(),
+  amount: z.coerce.number().finite().optional(),
+  status: z.enum(['completed', 'pending']).optional()
+});
+
+module.exports = { createTransactionSchema, updateTransactionSchema };

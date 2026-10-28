@@ -17,6 +17,12 @@ if (fs.existsSync(envPathCwd)) {
 // Fallback to default .env if specific env file didn't populate
 dotenv.config();
 
+// Fail hard on startup if JWT_SECRET is missing
+if (!process.env.JWT_SECRET) {
+  console.error('[FATAL ERROR] process.env.JWT_SECRET is missing. Server cannot start.');
+  throw new Error('FATAL: JWT_SECRET environment variable is missing.');
+}
+
 const errorHandler = require('./middleware/errorHandler');
 const authRoutes = require('./routes/auth.routes');
 const transactionsRoutes = require('./routes/transactions.routes');

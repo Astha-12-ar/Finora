@@ -7,6 +7,7 @@ const createReminderSchema = z.object({
   dueDate: z.string().trim().min(1).optional(),
   due_date: z.string().trim().min(1).optional(),
   recurring: z.coerce.boolean().optional().default(false),
+  is_recurring: z.coerce.boolean().optional(),
   status: z.enum(['upcoming', 'overdue', 'paid']).optional().default('upcoming')
 })
   .refine(d => d.billName || d.bill_name, { message: 'Bill name is required', path: ['billName'] })
@@ -14,7 +15,8 @@ const createReminderSchema = z.object({
 
 const updateReminderSchema = z.object({
   status: z.enum(['upcoming', 'overdue', 'paid']).optional(),
-  recurring: z.coerce.boolean().optional()
+  recurring: z.coerce.boolean().optional(),
+  is_recurring: z.coerce.boolean().optional()
 });
 
 module.exports = { createReminderSchema, updateReminderSchema };

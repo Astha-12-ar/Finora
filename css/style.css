@@ -54,7 +54,8 @@ body:has(.login-container) {
 
 .error-message { color: #dc2626; font-size: 0.8rem; display: block; margin-top: 0.3rem; min-height: 1rem; }
 
-#loginBtn {
+#loginBtn,
+#registerBtn {
   width: 100%;
   padding: 0.7rem;
   background: #1a3c6e;
@@ -65,8 +66,55 @@ body:has(.login-container) {
   cursor: pointer;
   transition: background 0.2s;
 }
-#loginBtn:hover { background: #132b50; }
-#loginBtn:disabled { opacity: 0.6; cursor: not-allowed; }
+#loginBtn:hover,
+#registerBtn:hover { background: #132b50; }
+#loginBtn:disabled,
+#registerBtn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* Auth tabs toggle */
+.auth-tabs {
+  display: flex;
+  margin-bottom: 1.5rem;
+  background: #f1f5f9;
+  border-radius: 8px;
+  padding: 4px;
+  gap: 4px;
+  border: 1px solid #e2e8f0;
+}
+
+.auth-tab {
+  flex: 1;
+  padding: 0.55rem 0.5rem;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.auth-tab:hover {
+  color: #1a3c6e;
+}
+
+.auth-tab.active {
+  background: #ffffff;
+  color: #1a3c6e;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.success-message {
+  color: #15803d;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  padding: 0.6rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  margin-top: 1rem;
+  text-align: center;
+}
 
 .demo-note { font-size: 0.75rem; color: #9ca3af; margin-top: 1rem; text-align: center; }
 
@@ -273,8 +321,131 @@ body:has(.login-container) {
   border-color: #dc2626;
 }
 .delete-btn:disabled,
+.edit-btn:disabled,
 .mark-read-btn:disabled,
 .mark-paid-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.edit-btn {
+  padding: 0.35rem 0.65rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #1a3c6e;
+  background: #f0f4f8;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  margin-right: 0.4rem;
+}
+.edit-btn:hover {
+  background: #1a3c6e;
+  color: #fff;
+  border-color: #1a3c6e;
+}
+
+/* ===================== PAGINATION CONTROLS ===================== */
+.pagination-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 0.5rem 0.5rem;
+  margin-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+.pagination-btn {
+  padding: 0.45rem 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  background: #ffffff;
+  color: #1a3c6e;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.pagination-btn:hover:not(:disabled) {
+  background: #1a3c6e;
+  color: #ffffff;
+}
+.pagination-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: #f8fafc;
+}
+.page-indicator {
+  font-size: 0.85rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* ===================== MODAL STYLES ===================== */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal-card {
+  background: #ffffff;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 460px;
+  padding: 1.75rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+.modal-header h3 {
+  font-size: 1.2rem;
+  color: #1a3c6e;
+}
+.modal-close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: #94a3b8;
+  cursor: pointer;
+  line-height: 1;
+}
+.modal-close-btn:hover {
+  color: #1e293b;
+}
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+.primary-btn {
+  padding: 0.55rem 1rem;
+  background: #1a3c6e;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.primary-btn:hover {
+  background: #132b50;
+}
+.primary-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }

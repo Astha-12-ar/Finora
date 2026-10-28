@@ -11,21 +11,59 @@
     <h1>Finora</h1>
     <p class="tagline">Your banking activity, at a glance.</p>
 
+    <!-- Tab Toggle -->
+    <div class="auth-tabs" role="tablist">
+      <button type="button" id="tabLogin" class="auth-tab active" role="tab" aria-selected="true">Log In</button>
+      <button type="button" id="tabRegister" class="auth-tab" role="tab" aria-selected="false">Create Account</button>
+    </div>
+
+    <!-- Login Form -->
     <form id="loginForm" novalidate>
       <div class="form-group">
         <label for="email">Email</label>
-        <input type="email" id="email" name="email" required>
+        <input type="email" id="email" name="email" required placeholder="e.g. john@example.com">
         <span class="error-message" id="emailError"></span>
       </div>
 
       <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" id="password" name="password" required minlength="6">
+        <input type="password" id="password" name="password" required minlength="6" placeholder="••••••••">
         <span class="error-message" id="passwordError"></span>
       </div>
 
       <button type="submit" id="loginBtn">Log In</button>
-      <p class="demo-note">Demo only — try: john@example.com / demo123</p>
+      <p class="demo-note">Demo account: john@example.com / demo123</p>
+    </form>
+
+    <!-- Register Form -->
+    <form id="registerForm" class="hidden" novalidate>
+      <div class="form-group">
+        <label for="regName">Full Name</label>
+        <input type="text" id="regName" name="name" required placeholder="e.g. Jane Doe">
+        <span class="error-message" id="regNameError"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="regEmail">Email</label>
+        <input type="email" id="regEmail" name="email" required placeholder="e.g. jane@example.com">
+        <span class="error-message" id="regEmailError"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="regPassword">Password</label>
+        <input type="password" id="regPassword" name="password" required minlength="6" placeholder="At least 6 characters">
+        <span class="error-message" id="regPasswordError"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="regConfirmPassword">Confirm Password</label>
+        <input type="password" id="regConfirmPassword" name="confirmPassword" required minlength="6" placeholder="Repeat your password">
+        <span class="error-message" id="regConfirmError"></span>
+      </div>
+
+      <button type="submit" id="registerBtn">Create Account</button>
+      <div id="regSuccess" class="success-message hidden"></div>
+      <div id="regGlobalError" class="error-message"></div>
     </form>
   </div>
 

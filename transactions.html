@@ -77,8 +77,63 @@
         </table>
         <!-- Removed inline style="display:none;" to fix the CSS warning -->
         <p id="noResults" class="no-results hidden">No transactions found.</p>
+
+        <!-- Pagination Controls -->
+        <div class="pagination-container" id="paginationControls">
+          <button id="prevPageBtn" class="pagination-btn" disabled>&laquo; Previous</button>
+          <span id="pageIndicator" class="page-indicator">Page 1 of 1</span>
+          <button id="nextPageBtn" class="pagination-btn" disabled>Next &raquo;</button>
+        </div>
       </section>
     </main>
+  </div>
+
+  <!-- Edit Transaction Modal -->
+  <div id="editModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="editModalTitle">Edit Transaction</h3>
+        <button type="button" id="closeEditModalBtn" class="modal-close-btn" aria-label="Close modal">&times;</button>
+      </div>
+      <form id="editTransactionForm" class="edit-form">
+        <input type="hidden" id="editTxnId">
+        
+        <div class="form-group">
+          <label for="editTxnDate">Date</label>
+          <input type="date" id="editTxnDate" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="editTxnMerchant">Merchant</label>
+          <input type="text" id="editTxnMerchant" required>
+        </div>
+
+        <div class="form-group">
+          <label for="editTxnCategory">Category</label>
+          <input type="text" id="editTxnCategory" required>
+        </div>
+
+        <div class="form-group">
+          <label for="editTxnAmount">Amount (- for debit, + for credit)</label>
+          <input type="number" id="editTxnAmount" required>
+        </div>
+
+        <div class="form-group">
+          <label for="editTxnStatus">Status</label>
+          <select id="editTxnStatus">
+            <option value="completed">Completed</option>
+            <option value="pending">Pending</option>
+          </select>
+        </div>
+
+        <span class="error-message" id="editTxnError"></span>
+
+        <div class="modal-actions">
+          <button type="button" id="cancelEditBtn" class="secondary-btn">Cancel</button>
+          <button type="submit" id="saveEditBtn" class="primary-btn">Save Changes</button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <script src="js/api.js"></script>

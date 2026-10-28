@@ -123,15 +123,20 @@ async function handleAddReminder(e) {
 
 async function markAsPaid(id) {
   try {
-    await apiFetch(`/reminders/${id}`, {
+    const res = await apiFetch(`/reminders/${id}`, {
       method: "PATCH",
       body: JSON.stringify({ status: "paid" })
     });
     const reminder = allReminders.find(r => String(r.id) === String(id));
     if (reminder) {
       reminder.status = "paid";
-      renderReminders();
     }
+    // Append rollover reminder if created
+    if (res && res.nextReminder) {
+      allReminders.push(res.nextReminder);
+    }
+    updateReminderStatuses();
+    renderReminders();
   } catch (err) {
     console.error("Failed to mark reminder as paid:", err);
     window.alert(err.message || "Failed to mark reminder as paid.");
